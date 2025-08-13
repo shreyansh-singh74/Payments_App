@@ -89,7 +89,7 @@ const signinSchema = z.object({
 
 router.post("/signin", async (req, res) => {
   const validateData = signinSchema.safeParse(req.body);
-  if (!validateData) {
+  if (!validateData.success) {
     return res.status(411).json({
       message: "Error while logging in",
     });
@@ -131,7 +131,7 @@ const updateBody = z.object({
 
 router.put("/", authMiddleware, async (req, res) => {
   const success = updateBody.safeParse(req.body);
-  if (!success) {
+  if (!success.success) {
     return res.status(411).json({
       message: "Error while updating the information",
     });

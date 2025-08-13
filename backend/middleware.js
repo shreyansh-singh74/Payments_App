@@ -19,10 +19,13 @@ function authMiddleware(req,res,next){
 
     try{
         const decoded = jwt.verify(token,JWT_SECRET);
+        console.log('Decoded in middleware:', decoded);
         req.userId = decoded.userId;
+        console.log('Setting req.userId to:', req.userId);
         next();
     }
-    catch{
+    catch(error){
+        console.log('JWT verification error:', error.message);
         return res.status(400).json({
             message : "Failed authentication."
         });
