@@ -1,7 +1,7 @@
 const express = require("express");
 const z = require("zod");
 const router = express.Router();
-const { User } = require("../db");
+const { User, Account } = require("../db");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const bcrypt = require("bcrypt");
@@ -14,6 +14,9 @@ const signupSchema = z.object({
   firstName: z.string().max(100).min(1),
   lastName: z.string().max(100).min(1),
 });
+
+
+
 
 router.post("/signup", async (req, res) => {
   try {
@@ -56,17 +59,22 @@ router.post("/signup", async (req, res) => {
       JWT_SECRET
     );
 
-    // Add logging here
-    console.log("User created:", userId);
-    console.log("JWT_SECRET:", JWT_SECRET);
+    // Create a new Account with Some Balance
+    await Account.create({
+      userId : userId,
+      balance : 1 + Math.random() * 1000
+    });
 
+    
     return res.json({
       message: "User Created Successfully",
       token: token,
     });
   } catch (error) {
+      console.error("Signup error:", error); 
     return res.status(500).json({
       message: "Internal Server Error",
+      error : error.message
     });
   }
 });
@@ -75,6 +83,9 @@ const signinSchema = z.object({
   username: z.string().email(),
   password: z.string(),
 });
+
+
+
 
 router.post("/signin", async (req, res) => {
   const validateData = signinSchema.safeParse(req.body);
@@ -116,6 +127,8 @@ const updateBody = z.object({
   lastName: z.string().optional(),
 });
 
+
+
 router.put("/", authMiddleware, async (req, res) => {
   const success = updateBody.safeParse(req.body);
   if (!success) {
@@ -129,6 +142,8 @@ router.put("/", authMiddleware, async (req, res) => {
     message: "Updated Successfully",
   });
 });
+
+
 
 router.get("/bulk", async (req, res) => {
   const filter = req.query.filter || "";
@@ -157,7 +172,7 @@ router.get("/bulk", async (req, res) => {
       _id : user._id
     }))
   });
-
 });
+
 
 module.exports = router;

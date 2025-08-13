@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { Schema } = require('zod');
 
 
 // Db Connection
@@ -39,10 +40,29 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+// Bank Schema
+const accountSchema = new mongoose.Schema({
+    userId : {
+        type : mongoose.Schema.Types.ObjectId, 
+        ref : 'User',
+        required : true
+    },
+    balance : {
+        type : Number,
+        required : true
+    }
+});
+
+
+
+
+
 // Create Model
 const User = mongoose.model('User', userSchema);
+const Account = mongoose.model('Account',accountSchema);
 
 // export 
 module.exports = {
-	User
+	User,
+    Account
 };
