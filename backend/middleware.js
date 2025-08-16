@@ -2,32 +2,26 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require('./config')
 
 function authMiddleware(req,res,next){
-    // Add debugging to see what headers are being received
-    console.log('All headers:', req.headers);
-    console.log('Authorization header:', req.headers.authorization);
-    
     const authHeader = req.headers.authorization;
 
-    if(!authHeader){
+    if(!authHeader || !authHeader.startsWith('Bearer ')){
         return res.status(401).json({
-            message : "No Authorized"
+            message : "No token provided"
         });
     }
 
-    // Remove the Bearer check and use the token directly
-    const token = authHeader;
+    // Extract token from "Bearer <token>"
+    const token = authHeader.split(' ')[1];
 
     try{
-        const decoded = jwt.verify(token,JWT_SECRET);
-        console.log('Decoded in middleware:', decoded);
+        const decoded = jwt.verify(token, JWT_SECRET);
         req.userId = decoded.userId;
-        console.log('Setting req.userId to:', req.userId);
         next();
     }
     catch(error){
         console.log('JWT verification error:', error.message);
-        return res.status(400).json({
-            message : "Failed authentication."
+        return res.status(401).json({
+            message : "Invalid token"
         });
     }
 }
