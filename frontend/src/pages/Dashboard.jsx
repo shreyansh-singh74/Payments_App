@@ -41,10 +41,13 @@ export const Dashboard = () => {
 
     const fetchUsers = async () => {
         try {
+
             const response = await api.get(`/user/bulk?filter=${filter}`);
+
             setUsers(response.data.users || []);
         } catch (error) {
             console.error('Error fetching users: ', error);
+
             setUsers([]); // Set empty array on error
         }
     };

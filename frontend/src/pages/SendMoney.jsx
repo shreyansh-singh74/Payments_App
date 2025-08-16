@@ -28,7 +28,7 @@ export const SendMoney = () => {
                 amount: amt
             });
             alert("Transfer successful!");
-            navigate('/dashboard');
+            navigate('/');
         } catch (error) {
             alert(error?.response?.data?.message || "Transfer failed");
         } finally {

@@ -34,8 +34,11 @@ router.post('/transfer', authMiddleware, async (req, res) => {
         const session = await mongoose.startSession();
         session.startTransaction();
 
-        const { amount, to } = req.body;
-
+        
+        const { amount, to } = req.body;    
+        
+        console.log({amount,to}); //debug
+        
         // Find the recipient account by user ID or username
         let toAccount;
         

@@ -24,7 +24,7 @@ export function Users({ users = [], onFilterChange, filter }) {
     );
 }
 
-function User({ user }) {
+function User({ key,user }) {
     const navigate = useNavigate();
 
     return (

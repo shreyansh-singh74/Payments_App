@@ -15,9 +15,6 @@ const signupSchema = z.object({
   lastName: z.string().max(100).min(1),
 });
 
-
-
-
 router.post("/signup", async (req, res) => {
   try {
     const validateData = signupSchema.safeParse(req.body);
@@ -61,20 +58,19 @@ router.post("/signup", async (req, res) => {
 
     // Create a new Account with Some Balance
     await Account.create({
-      userId : userId,
-      balance : 1 + Math.random() * 1000
+      userId: userId,
+      balance: 1 + Math.random() * 1000,
     });
 
-    
     return res.json({
       message: "User Created Successfully",
       token: token,
     });
   } catch (error) {
-      console.error("Signup error:", error); 
+    console.error("Signup error:", error);
     return res.status(500).json({
       message: "Internal Server Error",
-      error : error.message
+      error: error.message,
     });
   }
 });
@@ -83,9 +79,6 @@ const signinSchema = z.object({
   username: z.string().email(),
   password: z.string(),
 });
-
-
-
 
 router.post("/signin", async (req, res) => {
   const validateData = signinSchema.safeParse(req.body);
@@ -127,8 +120,6 @@ const updateBody = z.object({
   lastName: z.string().optional(),
 });
 
-
-
 router.put("/", authMiddleware, async (req, res) => {
   const success = updateBody.safeParse(req.body);
   if (!success.success) {
@@ -142,8 +133,6 @@ router.put("/", authMiddleware, async (req, res) => {
     message: "Updated Successfully",
   });
 });
-
-
 
 router.get("/bulk", async (req, res) => {
   const filter = req.query.filter || "";
@@ -165,14 +154,13 @@ router.get("/bulk", async (req, res) => {
   });
 
   res.json({
-    user : users.map(user=>({
-      username : user.username,
-      firstName : user.firstName,
-      lastName : user.lastName,
-      _id : user._id
-    }))
+    users: users.map((user) => ({
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      _id: user._id,
+    })),
   });
 });
-
 
 module.exports = router;
